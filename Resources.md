@@ -1,27 +1,29 @@
-(https://www.renderforest.com/music-visualisations)
 
-(https://javascript.info/)
+#Links
+- [RenderForest](https://www.renderforest.com/music-visualisations)
 
-(https://stackoverflow.com/questions/30110701/how-can-i-use-js-webaudioapi-for-beat-detection/30112800)
+- [JS Tutorial](https://javascript.info/)
 
-(http://joesul.li/van/beat-detection-using-web-audio/)
+- [WebAudioAPI q.](https://stackoverflow.com/questions/30110701/how-can-i-use-js-webaudioapi-for-beat-detection/30112800)
 
-(https://en.wikipedia.org/wiki/Band-pass_filter)
+- [Beat Detection using WAAPI](http://joesul.li/van/beat-detection-using-web-audio/)
 
-(https://songbpm.com/searches/marshmello-summer)
+- [BP Filter](https://en.wikipedia.org/wiki/Band-pass_filter)
 
-(https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [Song BPM checker](https://songbpm.com/searches/marshmello-summer)
 
-(https://tonejs.github.io/)
+- [WebAudioAPI Doc](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
 
-(https://www.cs.cmu.edu/~music/cmsip/schedule.html)
+- [tone.js](https://tonejs.github.io/)
 
-(https://www.sweetwater.com/insync/7-things-about-sample-rate/)
+- [Some shiz](https://www.cs.cmu.edu/~music/cmsip/schedule.html)
 
-(https://en.wikipedia.org/wiki/Time%E2%80%93frequency_analysis_for_music_signals)
+- [Sample rate stuff](https://www.sweetwater.com/insync/7-things-about-sample-rate/)
 
-(https://en.wikipedia.org/wiki/Fast_Fourier_transform)
+- [Freq. Analysis](https://en.wikipedia.org/wiki/Time%E2%80%93frequency_analysis_for_music_signals)
 
-(https://en.wikipedia.org/wiki/Sampling_(signal_processing))
+- [FFT](https://en.wikipedia.org/wiki/Fast_Fourier_transform)
 
-(https://en.wikipedia.org/wiki/Fast_Fourier_transform)
+- [Sampling](https://en.wikipedia.org/wiki/Sampling_(signal_processing))
+
+
