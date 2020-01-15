@@ -13,14 +13,22 @@ audio.src = URL.createObjectURL(files[0]); // Creates a DOMString containing the
 const name = files[0].name
 h3.innerText = `${name}` // Sets <h3> to the name of the file
 
+const audio = document.getElementById("audio");
+
 // mute button
 var mute = document.querySelector('.mute');
 
+///////// <CANVAS> INITIALIZATION //////////
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const ctx = canvas.getContext("2d");
+///////////////////////////////////////////
+
 // setting up the different audio nodes we will use for the web app
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const audio = document.getElementById("audio");
-var analyser = audioCtx.createAnalyser();
-var source; //change to const?
+const audioCtx = new AudioContext();
+let source = context.createMediaElementSource(audio); // Give the audio context an audio source,
+const analyser = audioCtx.createAnalyser(); // Create an analyser for audio context
+//change to const?
 //const stream; for mic input?
 //analyser.minDecibels = -90;
 //analyser.maxDecibels = -10;
@@ -28,12 +36,13 @@ var source; //change to const?
 
 // connect node to audio source (somewhere b/w input and output)
 source = audioCtx.createMediaStreamSource(audio);
-source.connect(analyser);
-analyser.connect(distortion);
-distortion.connect(audioCtx.destination);
+source.connect(analyser); // Connects audio context source to analyser
+distortion.connect(audioCtx.destination); // End destination of an audio graph in a given context
+// Sends sound to the speakers or headphones
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // audio effects
+//analyser.connect(distortion);
 //var distortion = audioCtx.createWaveShaper();
 //var gainNode = audioCtx.createGain();
 //var biquadFilter = audioCtx.createBiquadFilter();
@@ -87,11 +96,12 @@ var visualSelect = document.getElementById("visual");
 var drawVisual;
 
 // setting up the buffer
-analyser.fftSize = 256; //2048 for waveform?
-var bufferLength = analyser.frequencyBinCount;
+analyser.fftSize = 256;
+const bufferLength = analyser.frequencyBinCount; // half of fft size
 console.log(bufferLength);
-var dataArray = new Float32Array(bufferLength); //number of data points we're collecting for the given fft size
+const dataArray = new Uint8Array(bufferLength); //number of data points we're collecting for the given fft size
 
+console.log('DATA-ARRAY: ', dataArray)
 // Clear the canvas -- (define width and height)
 canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
