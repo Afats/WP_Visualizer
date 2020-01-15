@@ -1,141 +1,146 @@
-// not sure this is needed as function is dead
-navigator.getUserMedia = (navigator.getUserMedia ||
-                          navigator.webkitGetUserMedia ||
-                          navigator.mozGetUserMedia ||
-                          navigator.msGetUserMedia);
+window.onload = function() {
 
-// file input
-const file = document.getElementById("file-input");
-const files = this.files; // FileList containing File objects selected by the user (DOM File API)
-console.log('FILES[0]: ', files[0])
-audio.src = URL.createObjectURL(files[0]); // Creates a DOMString containing the specified File object
+  // file input
+  const file = document.getElementById("file-input");
+  const canvas = document.getElementById("canvas");
+  const audio = document.getElementById("audio");
+  //const h3 = document.getElementById('name')
 
-const name = files[0].name
-h3.innerText = `${name}` // Sets <h3> to the name of the file
+  file.onchange = function() {
 
-const audio = document.getElementById("audio");
+    const files = this.files; // FileList containing File objects selected by the user (DOM File API)
+    console.log('FILES[0]: ', files[0])
+    audio.src = URL.createObjectURL(files[0]); // Creates a DOMString containing the specified File object
 
-// mute button
-var mute = document.querySelector('.mute');
+    const name = files[0].name
+    h3.innerText = `${name}` // Sets <h3> to the name of the file
 
-///////// <CANVAS> INITIALIZATION //////////
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const ctx = canvas.getContext("2d");
-///////////////////////////////////////////
 
-// setting up the different audio nodes we will use for the web app
-const audioCtx = new AudioContext();
-let source = context.createMediaElementSource(audio); // Give the audio context an audio source,
-const analyser = audioCtx.createAnalyser(); // Create an analyser for audio context
-//change to const?
-//const stream; for mic input?
-//analyser.minDecibels = -90;
-//analyser.maxDecibels = -10;
-//analyser.smoothingTimeConstant = 0.85;
+    // mute button
+    var mute = document.querySelector('.mute');
 
-// connect node to audio source (somewhere b/w input and output)
-source = audioCtx.createMediaStreamSource(audio);
-source.connect(analyser); // Connects audio context source to analyser
-distortion.connect(audioCtx.destination); // End destination of an audio graph in a given context
-// Sends sound to the speakers or headphones
+    ///////// <CANVAS> context INITIALIZATION //////////
+    canvas.width = window.innerWidth; // -- REVISE
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext("2d");
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-// audio effects
-//analyser.connect(distortion);
-//var distortion = audioCtx.createWaveShaper();
-//var gainNode = audioCtx.createGain();
-//var biquadFilter = audioCtx.createBiquadFilter();
-//var convolver = audioCtx.createConvolver();
+    //var intendedWidth = document.querySelector('.wrapper').clientWidth;
+    //canvas.setAttribute('width',intendedWidth);
+    //var visualSelect = document.getElementById("visual");
+    //var drawVisual;
+    //canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    ///////////////////////////////////////////
 
-// work on this later?
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// Analyser node will capture audio data, methods below will copy dara into either an 8-bit or 32-bit array
-// AnalyserNode.minDecibels -- min power value for fft data caling
-// AnalyserNode.maxDecibels -- max power value for fft data scaling
-// AnalyserNode.smoothingTimeConstant -- different data averaging constants
-// AnalyserNode.getFloatFrequencyData() & AnalyserNode.getByteFrequencyData() -- capture frequency data
-// AnalyserNode.getByteTimeDomainData() & AnalyserNode.getFloatTimeDomainData() -- capture waveform data
-// AnalyserNode.frequencyBinCount -- half the fft value
+    const audioCtx = new AudioContext(); // Audio-processing graph
+    let source = context.createMediaElementSource(audio); // Give the audio context an audio source,
+    const analyser = audioCtx.createAnalyser(); // Create an analyser for audio context
+    //change to const?
+    //const stream; for mic input?
+    //analyser.minDecibels = -90;
+    //analyser.maxDecibels = -10;
+    //analyser.smoothingTimeConstant = 0.85;
 
-// capture audio data using fft, depending on fft size (multiples of 2, default is 2048)
 
-/////////////// ANALYSER FFTSIZE ////////////////////////
-// analyser.fftSize = 32;
-// analyser.fftSize = 64;
-// analyser.fftSize = 128;
-// analyser.fftSize = 256;
-// analyser.fftSize = 512;
-// analyser.fftSize = 1024;
-// analyser.fftSize = 2048;
-// analyser.fftSize = 4096;
-// analyser.fftSize = 8192;
-// analyser.fftSize = 16384;
-// analyser.fftSize = 32768;
+    source.connect(analyser); // Connects audio context source to analyser
+    distortion.connect(audioCtx.destination); // End destination of an audio graph in a given context
+    // Sends sound to the speakers or headphones
 
-// (FFT) is an algorithm that samples a signal over a period of time
-// and divides it into its frequency components (single sinusoidal oscillations).
-// It separates the mixed signals and shows what frequency is a violent vibration.
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // audio effects
+    //analyser.connect(distortion);
+    //var distortion = audioCtx.createWaveShaper();
+    //var gainNode = audioCtx.createGain();
+    //var biquadFilter = audioCtx.createBiquadFilter();
+    //var convolver = audioCtx.createConvolver();
 
-// (FFTSize) represents the window size in samples that is used when performing a FFT
+    // work on this later?
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// Lower the size, the less bars (but wider in size)
-///////////////////////////////////////////////////////////
+    // Analyser node will capture audio data, methods below will copy dara into either an 8-bit or 32-bit array
+    // AnalyserNode.minDecibels -- min power value for fft data caling
+    // AnalyserNode.maxDecibels -- max power value for fft data scaling
+    // AnalyserNode.smoothingTimeConstant -- different data averaging constants
+    // AnalyserNode.getFloatFrequencyData() & AnalyserNode.getByteFrequencyData() -- capture frequency data
+    // AnalyserNode.getByteTimeDomainData() & AnalyserNode.getFloatTimeDomainData() -- capture waveform data
+    // AnalyserNode.frequencyBinCount -- half the fft value
 
-// set up canvas context for visualizer
-var canvas = document.querySelector('.visualizer');
-var canvasCtx = canvas.getContext("2d");
+    // capture audio data using fft, depending on fft size (multiples of 2, default is 2048)
 
-var intendedWidth = document.querySelector('.wrapper').clientWidth;
+    /////////////// ANALYSER FFTSIZE ////////////////////////
+    // analyser.fftSize = 32;
+    // analyser.fftSize = 64;
+    // analyser.fftSize = 128;
+    // analyser.fftSize = 256;
+    // analyser.fftSize = 512;
+    // analyser.fftSize = 1024;
+    // analyser.fftSize = 2048;
+    // analyser.fftSize = 4096;
+    // analyser.fftSize = 8192;
+    // analyser.fftSize = 16384;
+    // analyser.fftSize = 32768;
 
-canvas.setAttribute('width',intendedWidth);
+    // (FFT) is an algorithm that samples a signal over a period of time
+    // and divides it into its frequency components (single sinusoidal oscillations).
+    // It separates the mixed signals and shows what frequency is a violent vibration.
 
-var visualSelect = document.getElementById("visual");
+    // (FFTSize) represents the window size in samples that is used when performing a FFT
 
-var drawVisual;
+    // Lower the size, the less bars (but wider in size)
+    ///////////////////////////////////////////////////////////
 
-// setting up the buffer
-analyser.fftSize = 256;
-const bufferLength = analyser.frequencyBinCount; // half of fft size
-console.log(bufferLength);
-const dataArray = new Uint8Array(bufferLength); //number of data points we're collecting for the given fft size
+    // setting up the buffer
+    analyser.fftSize = 256;
+    const bufferLength = analyser.frequencyBinCount; // bufferLength is half of fft size -- number of data values to tinker with
 
-console.log('DATA-ARRAY: ', dataArray)
-// Clear the canvas -- (define width and height)
-canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    // The FFT size defines the number of bins used for dividing the window into equal strips, or bins.
+    // Hence, a bin is a spectrum sample, and defines the frequency resolution of the window.
 
-function freqBarDraw() {
+    console.log(bufferLength);
+    const dataArray = new Uint8Array(bufferLength); //number of data points we're collecting for the given fft size
 
-  // to keep looping the drawing function
-  var drawVisual = requestAnimationFrame(draw);
-  // grab the time donain data
-  analyser.getFloatFrequencyData(dataArray);
+    console.log('DATA-ARRAY: ', dataArray)
+    // Clear the canvas -- (define width and height)
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+    console.log('WIDTH: ', WIDTH, 'HEIGHT: ', HEIGHT)
 
-  canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-  canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-  // most frequencies will come back with no audio in them -- therefore 2.5 factor
-  var barWidth = (WIDTH / bufferLength) * 2.5;  //(canvas width/no.of bars -> the buffer length)
-  var barHeight;
-  //draw a bar at x pixels across the canvas
-  var x = 0;
 
-  // frequency bar
-  // cycling thru dataArray, fill colour based on bar height
-  for(var i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i]/2; // height based on array value
+    function freqBarDraw() {
 
-        canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
-        // to draw bars from the bottom up
-        canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight);
+      // to keep looping the drawing function
+      var drawVisual = requestAnimationFrame(freqBarDraw);
+      // grab the time donain data
+      analyser.getFloatFrequencyData(dataArray);
 
-        x += barWidth + 1;
-      }
-    };
+      canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-freqBarDraw();
+      // most frequencies will come back with no audio in them -- therefore 2.5 factor
+      var barWidth = (WIDTH / bufferLength) * 2.5;  //(canvas width/no.of bars -> the buffer length)
+      console.log('BARWIDTH: ', barWidth)
+      var barHeight;
+      //draw a bar at x pixels across the canvas
+      var x = 0;
 
+      // frequency bar
+      // cycling thru dataArray, fill colour based on bar height
+      for(var i = 0; i < bufferLength; i++) {
+          barHeight = dataArray[i]/2; // height based on array value
+
+          canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight+100) + ',50,50)';
+          // to draw bars from the bottom up
+          canvasCtx.fillRect(x, (HEIGHT-barHeight/2), barWidth, barHeight);
+
+          x += barWidth + 1;
+        }
+    }
+
+    audio.play();
+    freqBarDraw();
+  };
+};
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   // waveform
 
