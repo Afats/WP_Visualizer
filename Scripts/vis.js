@@ -94,7 +94,7 @@ window.onload = function() {
     if(visualSetting == "frequencybars") {
 
       // setting up the buffer
-      analyser.fftSize = 256;
+      analyser.fftSize = 8192;
       const bufferLength = analyser.frequencyBinCount; // bufferLength is half of fft size -- number of data values to tinker with
 
       // The FFT size defines the number of bins used for dividing the window into equal strips, or bins.
@@ -122,7 +122,7 @@ window.onload = function() {
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
         // most frequencies will come back with no audio in them -- therefore 2.5 factor
-        var barWidth = (WIDTH / bufferLength) * 2.5;  //(canvas width/no.of bars -> the buffer length)
+        var barWidth = (WIDTH / bufferLength) * 5;  //(canvas width/no.of bars i.e. the buffer length)
         console.log('BARWIDTH: ', barWidth)
         var barHeight;
         //draw a bar at x pixels across the canvas
@@ -131,11 +131,11 @@ window.onload = function() {
         // frequency bar
         // cycling thru dataArray, fill colour based on bar height
         for(var i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i]/2; // height based on array value
+            barHeight = (dataArray[i] + 140)*2; // height based on array value
 
             canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight+100) + ',50,50)';
             // to draw bars from the bottom up
-            canvasCtx.fillRect(x, (HEIGHT-barHeight/2), barWidth, barHeight);
+            canvasCtx.fillRect(x, (HEIGHT-barHeight/2), barWidth, barHeight/2);
 
             x += barWidth + 1;
           }
