@@ -3,6 +3,7 @@ window.onload = function() {
   // file input
   const file = document.getElementById("file-input");
   const canvas = document.getElementById("canvas");
+  const h3 = document.getElementById("song-name")
   const audio = document.getElementById("audio");
   //const h3 = document.getElementById('name')
 
@@ -20,20 +21,18 @@ window.onload = function() {
     var mute = document.querySelector('.mute');
 
     ///////// <CANVAS> context INITIALIZATION //////////
-    canvas.width = window.innerWidth; // -- REVISE
-    canvas.height = window.innerHeight;
-    const ctx = canvas.getContext("2d");
+    const canvasCtx = canvas.getContext("2d");
+    var visualSelect = document.getElementById("visual");
 
-    //var intendedWidth = document.querySelector('.wrapper').clientWidth;
-    //canvas.setAttribute('width',intendedWidth);
-    //var visualSelect = document.getElementById("visual");
+    var intendedWidth = document.querySelector('.wrapper').clientWidth;
+    canvas.setAttribute('width',intendedWidth);
     //var drawVisual;
     //canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
     ///////////////////////////////////////////
 
 
     const audioCtx = new AudioContext(); // Audio-processing graph
-    let source = context.createMediaElementSource(audio); // Give the audio context an audio source,
+    let source = audioCtx.createMediaElementSource(audio); // Give the audio context an audio source,
     const analyser = audioCtx.createAnalyser(); // Create an analyser for audio context
     //change to const?
     //const stream; for mic input?
@@ -43,7 +42,7 @@ window.onload = function() {
 
 
     source.connect(analyser); // Connects audio context source to analyser
-    distortion.connect(audioCtx.destination); // End destination of an audio graph in a given context
+    analyser.connect(audioCtx.destination); // End destination of an audio graph in a given context
     // Sends sound to the speakers or headphones
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -89,56 +88,62 @@ window.onload = function() {
     // Lower the size, the less bars (but wider in size)
     ///////////////////////////////////////////////////////////
 
-    // setting up the buffer
-    analyser.fftSize = 256;
-    const bufferLength = analyser.frequencyBinCount; // bufferLength is half of fft size -- number of data values to tinker with
+    var visualSetting = visualSelect.value;
+    console.log(visualSetting);
 
-    // The FFT size defines the number of bins used for dividing the window into equal strips, or bins.
-    // Hence, a bin is a spectrum sample, and defines the frequency resolution of the window.
+    if(visualSetting == "frequencybars") {
 
-    console.log(bufferLength);
-    const dataArray = new Uint8Array(bufferLength); //number of data points we're collecting for the given fft size
+      // setting up the buffer
+      analyser.fftSize = 256;
+      const bufferLength = analyser.frequencyBinCount; // bufferLength is half of fft size -- number of data values to tinker with
 
-    console.log('DATA-ARRAY: ', dataArray)
-    // Clear the canvas -- (define width and height)
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
-    console.log('WIDTH: ', WIDTH, 'HEIGHT: ', HEIGHT)
+      // The FFT size defines the number of bins used for dividing the window into equal strips, or bins.
+      // Hence, a bin is a spectrum sample, and defines the frequency resolution of the window.
 
+      console.log(bufferLength);
+      const dataArray = new Float32Array(bufferLength); //number of data points we're collecting for the given fft size
 
+      console.log('DATA-ARRAY: ', dataArray)
+      // Clear the canvas -- (define width and height)
+      const WIDTH = canvas.width;
+      const HEIGHT = canvas.height;
+      console.log('WIDTH: ', WIDTH, 'HEIGHT: ', HEIGHT);
 
-    function freqBarDraw() {
+      canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
-      // to keep looping the drawing function
-      var drawVisual = requestAnimationFrame(freqBarDraw);
-      // grab the time donain data
-      analyser.getFloatFrequencyData(dataArray);
+      function freqBarDraw() {
 
-      canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+        // to keep looping the drawing function
+        var drawVisual = requestAnimationFrame(freqBarDraw);
+        // grab the time donain data
+        analyser.getFloatFrequencyData(dataArray);
 
-      // most frequencies will come back with no audio in them -- therefore 2.5 factor
-      var barWidth = (WIDTH / bufferLength) * 2.5;  //(canvas width/no.of bars -> the buffer length)
-      console.log('BARWIDTH: ', barWidth)
-      var barHeight;
-      //draw a bar at x pixels across the canvas
-      var x = 0;
+        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+        canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-      // frequency bar
-      // cycling thru dataArray, fill colour based on bar height
-      for(var i = 0; i < bufferLength; i++) {
-          barHeight = dataArray[i]/2; // height based on array value
+        // most frequencies will come back with no audio in them -- therefore 2.5 factor
+        var barWidth = (WIDTH / bufferLength) * 2.5;  //(canvas width/no.of bars -> the buffer length)
+        console.log('BARWIDTH: ', barWidth)
+        var barHeight;
+        //draw a bar at x pixels across the canvas
+        var x = 0;
 
-          canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight+100) + ',50,50)';
-          // to draw bars from the bottom up
-          canvasCtx.fillRect(x, (HEIGHT-barHeight/2), barWidth, barHeight);
+        // frequency bar
+        // cycling thru dataArray, fill colour based on bar height
+        for(var i = 0; i < bufferLength; i++) {
+            barHeight = dataArray[i]/2; // height based on array value
 
-          x += barWidth + 1;
-        }
+            canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight+100) + ',50,50)';
+            // to draw bars from the bottom up
+            canvasCtx.fillRect(x, (HEIGHT-barHeight/2), barWidth, barHeight);
+
+            x += barWidth + 1;
+          }
+      }
+
+      audio.play();
+      freqBarDraw();
     }
-
-    audio.play();
-    freqBarDraw();
   };
 };
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
