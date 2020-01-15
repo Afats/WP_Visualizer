@@ -24,6 +24,7 @@
 
 - [WebAudioAPI tute](https://www.html5rocks.com/en/tutorials/webaudio/intro/)
 
-- [https://github.com/mdn/voice-change-o-matic-float-data/blob/gh-pages/scripts/app.js] -- MASSIVE scamming from this  
+- [MDN project that's useful](https://github.com/mdn/voice-change-o-matic-float-data/blob/gh-pages/scripts/app.js) -- MASSIVE scamming from this  
 
+- [Soundcloud API](https://developers.soundcloud.com/)
 
