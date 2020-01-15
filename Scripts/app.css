@@ -53,16 +53,17 @@ canvas {
               0 3px 4px rgba(0,0,0,0.7);
 	background-color: #808080;
 	background-image: linear-gradient(rgba(128,128,128, 0.10), rgba(32,32,32, 0.90));
-	animation: bg 2s infinite linear;
-	animation-delay: 1.5s;
-	animation-duration: 4s;
+	animation: bg 5s infinite linear;
+	animation-delay: 2s;
+	animation-duration: 7s;
+	animation-timing-function: 1s;
   z-index: 2;
   opacity: 0.3;
 }
 
 @keyframes bg {
   0%{ background-position: 0 0; }
-  100%{ background-position: 100px 100px; }
+  100%{ background-position: 300px 300px; }
 }
 
 .controls {

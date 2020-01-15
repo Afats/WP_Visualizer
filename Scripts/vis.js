@@ -114,15 +114,18 @@ window.onload = function() {
       function freqBarDraw() {
 
         // to keep looping the drawing function
-        var drawVisual = requestAnimationFrame(freqBarDraw);
-        // grab the time donain data
+        var drawVisual = requestAnimationFrame(freqBarDraw); //callback func to invoke b4 rendering
+
+        // Copies the frequency data into dataArray
+        // Results in a normalized array of values between 0 and 255
+        // Before this step, dataArray's values are all zeros (but with length of fftsize)
         analyser.getFloatFrequencyData(dataArray);
 
         canvasCtx.fillStyle = 'rgb(200, 200, 200)';
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
         // most frequencies will come back with no audio in them -- therefore 2.5 factor
-        var barWidth = (WIDTH / bufferLength) * 5;  //(canvas width/no.of bars i.e. the buffer length)
+        var barWidth = (WIDTH / bufferLength) * 2.5;  //(canvas width/no.of bars i.e. the buffer length)
         console.log('BARWIDTH: ', barWidth)
         var barHeight;
         //draw a bar at x pixels across the canvas
@@ -133,9 +136,9 @@ window.onload = function() {
         for(var i = 0; i < bufferLength; i++) {
             barHeight = (dataArray[i] + 140)*2; // height based on array value
 
-            canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight+100) + ',50,50)';
+            canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight+150) + ',50,50)';
             // to draw bars from the bottom up
-            canvasCtx.fillRect(x, (HEIGHT-barHeight/2), barWidth, barHeight/2);
+            canvasCtx.fillRect(x, (HEIGHT-barHeight)*1.25, barWidth, barHeight*2);
 
             x += barWidth + 1;
           }
@@ -144,46 +147,73 @@ window.onload = function() {
       audio.play();
       freqBarDraw();
     }
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    else if(visualSetting == "sinewave") {
+    // waveform
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.smoothingTimeConstant = 0.85;
+
+    //too high and its tooo wavy
+    analyser.fftSize = 2048;  //lower the value, the smoother the wave, too low and it's like a guitar string or those gym ropes lol
+    var bufferLength = analyser.fftSize;
+    console.log(bufferLength);
+    var dataArray = new Float32Array(bufferLength);
+
+    console.log('DATA-ARRAY: ', dataArray)
+    // Clear the canvas -- (define width and height)
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+    console.log('WIDTH: ', WIDTH, 'HEIGHT: ', HEIGHT);
+
+    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    function sineWaveDraw() {
+
+      var drawVisual = requestAnimationFrame(sineWaveDraw);
+
+      analyser.getFloatTimeDomainData(dataArray);
+
+      canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      canvasCtx.lineWidth = 2;
+      canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+
+      canvasCtx.beginPath();
+
+      // divide canvas width by array length (eq. to FreqBin Count)
+      var sliceWidth = WIDTH * 1.0 / bufferLength;
+      var x = 0; // variable to define the position to move to for drawing each sement of the line
+      //analyser.smoothingTimeConstant = 0.85;
+
+      // loop to define the position of a small segment of the wave for each point in the buffer,
+      // at a certain height based on the data point value from the array,
+      // then moving the line across to the place where the next wave wave segment should be drawn
+      for(var i = 0; i < bufferLength; i++) {
+
+            var v = dataArray[i]*40;
+            var y = HEIGHT/2 + 2*v;
+
+            if(i === 0) {
+              canvasCtx.moveTo(x, y);
+            } else {
+              canvasCtx.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+          }
+
+          canvasCtx.lineTo(canvas.width, canvas.height/2);
+          canvasCtx.stroke();
+
+      };
+
+      sineWaveDraw();
+    }
   };
 };
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // waveform
 
-  //canvasCtx.lineWidth = 2;
-  //canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-  //canvasCtx.beginPath();
-
-  // divide canvas width by array length (eq. to FreqNin Count)
-  //var sliceWidth = WIDTH * 1.0 / bufferLength;
-  //var x = 0; // variable to define the position to move to for drawing each sement of the line
-
-  // loop to define the position of a small segment of the wave for each point in the buffer,
-  // at a certain height based on the data point value from the array,
-  // then moving the line across to the place where the next wave wave segment should be drawn
-  /*for(var i = 0; i < bufferLength; i++) {
-
-        var v = dataArray[i] / 128.0;
-        var y = v * HEIGHT/2;
-
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-        canvasCtx.beginPath();
-
-        // divide canvas width by array length (eq. to FreqNin Count)
-        //var sliceWidth = WIDTH * 1.0 / bufferLength;
-        //var x = 0; // variable to define the position to move to for drawing each sement of the line
-
-
-        if(i === 0) {
-          canvasCtx.moveTo(x, y);
-        } else {
-          canvasCtx.lineTo(x, y);
-        }
-
-        x += sliceWidth;
-      }
-
-      canvasCtx.lineTo(canvas.width, canvas.height/2);
-      canvasCtx.stroke();
-    }; */
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-- END -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
