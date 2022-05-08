@@ -1,2 +1,3 @@
-# WP_Visualizer
-Yeet Nation
+# Beats Visualizer
+
+Yeet Nation.
